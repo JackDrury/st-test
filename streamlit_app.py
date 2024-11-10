@@ -5,7 +5,7 @@ import openai
 import json
 
 # Initialize OpenAI client
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+openai.api_key=st.secrets["OPENAI_API_KEY"]
 
 # Database connection
 @st.cache_resource
@@ -121,13 +121,14 @@ Return ONLY the SQL query, no explanations or additional text. The query should 
         {"role": "user", "content": prompt}
     ]
 
-    response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=messages,
+    response = openai.Completion.create(
+        engine="gpt-3.5-turbo",  # You can change to a different engine
+        prompt=prompt,
+        max_tokens=150,
         temperature=0
     )
     
-    return response.choices[0].message.content.strip()
+    return response.choices[0].text.strip()
 
 # Function to execute SQL query safely
 def execute_query(query):
