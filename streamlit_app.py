@@ -1,11 +1,11 @@
 import streamlit as st
 import sqlite3
 import pandas as pd
-import openai
+from openai import OpenAI
 import json
 
 # Initialize OpenAI client
-openai.api_key=st.secrets["OPENAI_API_KEY"]
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 # Database connection
 @st.cache_resource
@@ -121,14 +121,13 @@ Return ONLY the SQL query, no explanations or additional text. The query should 
         {"role": "user", "content": prompt}
     ]
 
-    response = openai.Completion.create(
-        engine="gpt-3.5-turbo",  # You can change to a different engine
-        prompt=prompt,
-        max_tokens=150,
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=messages,
         temperature=0
     )
     
-    return response.choices[0].text.strip()
+    return response.choices[0].message.content.strip()
 
 # Function to execute SQL query safely
 def execute_query(query):
