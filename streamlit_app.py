@@ -231,10 +231,10 @@ if generate_button and query_prompt:
             function_name = tool_call.function.name
             function_to_call = available_functions[function_name]
             function_args = json.loads(tool_call.function.arguments)
-            target_q = function_args.get("target_query") # This is the query that the agent decided it wants to use
-            list_of_queries.append(target_q)
+            target_query = function_args.get("target_query") # This is the query that the agent decided it wants to use
+            list_of_queries.append(target_query)
             function_response = function_to_call(
-                target_query=target_q 
+                target_query 
             )
             messages.append(
                 {
