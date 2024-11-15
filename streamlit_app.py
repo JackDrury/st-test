@@ -7,6 +7,8 @@ import json
 # Initialize OpenAI client
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
+model_version = "gpt-4o-mini"
+
 # Database connection
 @st.cache_resource
 def init_connection():
@@ -122,7 +124,7 @@ Return ONLY the SQL query, no explanations or additional text. The query should 
     ]
 
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model=model_version,
         messages=messages,
         temperature=0
     )
