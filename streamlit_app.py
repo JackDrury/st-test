@@ -301,7 +301,7 @@ if generate_button and query_prompt:
 #        data=results.to_csv(index=False).encode('utf-8'),
 #        file_name="query_results.csv",
 #        mime="text/csv"
-    )
+#    )
 
 # Cleanup connection when app is done
 def cleanup():
