@@ -168,44 +168,139 @@ with col1:
     
 if generate_button and query_prompt:
     # Generate SQL query
-    sql_query = generate_sql_query(query_prompt, get_schema_description())
+#    sql_query = generate_sql_query(query_prompt, get_schema_description())
+############################################################################
+    schema = get_schema_description()
+    prompt = f"""
+        You are a SQL expert. There is a database with the following schema:
+        {schema}
+        Now please convert the question below into working SQL and execute it:
+        {query_prompt}
+    """
+    messages = [{"role": "user", "content": prompt}]
+    tools = [
+        {
+            "type": "function",
+            "function": {
+                "name": "execute_query",
+                "description": "Execute the given SQL query and return the results",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "target_query": {
+                            "type": "string",
+                            "description": "The SQL query to execute"
+                        }                
+                    },
+                    "required": ["target_query"]
+                }
+            }
+
+        }
+    ]
+
+
+    response = client.chat.completions.create(
+        model=model_version,
+        messages=messages,
+        tools=tools,
+        tool_choice="auto",  # auto is default, but we'll be explicit
+    )
+    response_message = response.choices[0].message
+    print("=============================")
+    print(f'here is the first gpt response message:')
+#    logging.info(f'gpt_response1:{response_message}')
+    print(response_message)
+    print("=============================")
+
+# Step 2: check if GPT wanted to call a function
+    tool_calls = response_message.tool_calls
+    if tool_calls:
+# Step 3: call the function
+        # Note: the JSON response may not always be valid; be sure to handle errors
+
+        available_functions = {
+            "execute_query": execute_query,
+        }  # only one function in this example, but you can have multiple
+
+        messages.append(response_message)
+        
+        list_of_queries = []
+        
+        for tool_call in tool_calls:
+            function_name = tool_call.function.name
+            function_to_call = available_functions[function_name]
+            function_args = json.loads(tool_call.function.arguments)
+            target_q = function_args.get("target_query") # This is the query that the agent decided it wants to use
+            list_of_queries.append(target_q)
+            function_response = function_to_call(
+                target_query=target_q 
+            )
+            messages.append(
+                {
+                    "tool_call_id": tool_call.id,
+                    "role": "tool",
+                    "name": function_name,
+                    "content": function_response,
+                }
+            )  # extend conversation with function response
+
+
+        second_response = client.chat.completions.create(
+            model=model_version,
+            messages=messages,
+        )  # get a new response from the model where it can see the function response
+#        print("=============================")
+#        print("second (final) response:")
+#        print(second_response)
+#        logging.info(f'gpt_response2:{second_response}')
+#        print('=============================END=============================')
+#        return second_response
+
+#
+#    else:
+#        print("apparently GPT didn't want to call a function....")
+
+
+############################################################################
     
-    # Display the generated query
-    st.code(sql_query, language='sql')
+        # Display the generated queries
+        st.code('\n'.join(list_of_queries), language='sql')
     
-    # Execute query and show results
-    results = execute_query(sql_query)
-    if results is not None:
-        st.header('Query Results')
+    # Show result of LAST QUERY (note that the below assumes one query while above allows many, please rectify)
+        if function_response is not None:
+            st.header('Query Results')
+            st.subheader('Explanation of what is going on')
+            st.text(second_response)
         
         # Display results
-        st.dataframe(results)
+            st.dataframe(results)
         
         # Show visualization options if applicable
-        if len(results) > 0 and len(results.columns) >= 2:
-            st.header('Visualization')
+            if len(results) > 0 and len(results.columns) >= 2:
+                st.header('Visualization')
             
             # Detect numeric columns
-            numeric_cols = results.select_dtypes(include=['float64', 'int64']).columns
+                numeric_cols = results.select_dtypes(include=['float64', 'int64']).columns
             
-            if len(numeric_cols) > 0:
-                chart_type = st.selectbox('Select chart type:', 
-                                        ['bar', 'line', 'scatter'])
+                if len(numeric_cols) > 0:
+                    chart_type = st.selectbox('Select chart type:', 
+                                            ['bar', 'line', 'scatter'])
                 
-                if chart_type == 'bar':
-                    st.bar_chart(results)
-                elif chart_type == 'line':
-                    st.line_chart(results)
-                else:
-                    st.scatter_chart(results)
+                    if chart_type == 'bar':
+                        st.bar_chart(results)
+                    elif chart_type == 'line':
+                        st.line_chart(results)
+                    else:
+                        st.scatter_chart(results)
 
 # Add export functionality
-if 'results' in locals() and results is not None:
-    st.download_button(
-        label="Download results as CSV",
-        data=results.to_csv(index=False).encode('utf-8'),
-        file_name="query_results.csv",
-        mime="text/csv"
+#if 'results' in locals() and results is not None:
+#    st.download_button(
+##        label="Download results as CSV",
+#        data=results.to_csv(index=False).encode('utf-8'),
+#        file_name="query_results.csv",
+#        mime="text/csv"
     )
 
 # Cleanup connection when app is done
