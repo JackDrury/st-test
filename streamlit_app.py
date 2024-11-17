@@ -287,22 +287,22 @@ if generate_button and query_prompt:
 #            st.dataframe(results)
         
         # Show visualization options if applicable
-            if len(results) > 0 and len(results.columns) >= 2:
-                st.header('Visualization')
+#            if len(results) > 0 and len(results.columns) >= 2:
+#                st.header('Visualization')
             
             # Detect numeric columns
-                numeric_cols = results.select_dtypes(include=['float64', 'int64']).columns
+#                numeric_cols = results.select_dtypes(include=['float64', 'int64']).columns
             
-                if len(numeric_cols) > 0:
-                    chart_type = st.selectbox('Select chart type:', 
-                                            ['bar', 'line', 'scatter'])
+#                if len(numeric_cols) > 0:
+#                    chart_type = st.selectbox('Select chart type:', 
+#                                            ['bar', 'line', 'scatter'])
                 
-                    if chart_type == 'bar':
-                        st.bar_chart(results)
-                    elif chart_type == 'line':
-                        st.line_chart(results)
-                    else:
-                        st.scatter_chart(results)
+#                    if chart_type == 'bar':
+#                        st.bar_chart(results)
+#                    elif chart_type == 'line':
+#                        st.line_chart(results)
+#                    else:
+#                        st.scatter_chart(results)
 
 # Add export functionality
 #if 'results' in locals() and results is not None:
