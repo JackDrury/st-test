@@ -284,7 +284,7 @@ if generate_button and query_prompt:
             st.text(second_response.choices[0].message.content)
         
         # Display results
-            st.dataframe(results)
+#            st.dataframe(results)
         
         # Show visualization options if applicable
             if len(results) > 0 and len(results.columns) >= 2:
