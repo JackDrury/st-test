@@ -141,8 +141,6 @@ def execute_query(query):
 
     answer = cursor.fetchall()
 
-    answer = answer_dates_to_string(answer)
-
     answer = json.dumps(answer)
 
     cursor.close()
