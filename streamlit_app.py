@@ -134,11 +134,11 @@ Return ONLY the SQL query, no explanations or additional text. The query should 
 # Function to execute SQL query safely
 def execute_query(query):
     try:
-        return pd.read_sql_query(query, conn)
+        return json.dumps(pd.read_sql_query(query, conn))
     except Exception as e:
         print("guess we couldn't execute the query")
         st.error(f"Error executing query: {str(e)}")
-        return None
+        return json.dumpes(None)
 
 # Streamlit UI
 st.title('📊 SQL Query Generator')
@@ -193,7 +193,8 @@ if generate_button and query_prompt:
                             "description": "The SQL query to execute"
                         }                
                     },
-                    "required": ["target_query"]
+                    "required": ["target_query"],
+                    "additionalProperties": False
                 }
             }
 
