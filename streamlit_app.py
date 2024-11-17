@@ -136,6 +136,7 @@ def execute_query(query):
     try:
         return pd.read_sql_query(query, conn)
     except Exception as e:
+        print("guess we couldn't execute the query")
         st.error(f"Error executing query: {str(e)}")
         return None
 
@@ -232,10 +233,12 @@ if generate_button and query_prompt:
             function_to_call = available_functions[function_name]
             function_args = json.loads(tool_call.function.arguments)
             target_query = function_args.get("target_query") # This is the query that the agent decided it wants to use
+            print(f"this is the target_query:\n{target_query}")
             list_of_queries.append(target_query)
             function_response = function_to_call(
                 target_query 
             )
+            print(f"this is function response:\n{function_response}")
             messages.append(
                 {
                     "tool_call_id": tool_call.id,
