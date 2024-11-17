@@ -281,7 +281,7 @@ if generate_button and query_prompt:
         if function_response is not None:
             st.header('Query Results')
             st.subheader('Explanation of what is going on')
-            st.text(second_response['choices'][0]['message']['content'])
+            st.text(second_response.choices[0].message.content)
         
         # Display results
             st.dataframe(results)
