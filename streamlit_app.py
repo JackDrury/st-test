@@ -6,7 +6,7 @@ import json
 # Initialize OpenAI client
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
-model_version = "gpt-4o-mini"
+model_version = "gpt-4o-mini-2024-07-18"
 
 # Database connection
 @st.cache_resource
@@ -276,12 +276,12 @@ if generate_button and query_prompt:
     
         # Display the generated queries
         st.code('\n'.join(list_of_queries), language='sql')
-    
+        results = function_response
     # Show result of LAST QUERY (note that the below assumes one query while above allows many, please rectify)
         if function_response is not None:
             st.header('Query Results')
             st.subheader('Explanation of what is going on')
-            st.text(second_response)
+            st.text(second_response['choices'][0]['message']['content'])
         
         # Display results
             st.dataframe(results)
