@@ -132,12 +132,12 @@ Return ONLY the SQL query, no explanations or additional text. The query should 
 
 # Function to execute SQL query safely
 def execute_query(query):
-    if target_query[-1] != ";":
-        target_query += ";"
+    if query[-1] != ";":
+        query += ";"
 
     cursor = conn.cursor() 
 
-    cursor.execute(target_query)
+    cursor.execute(query)
 
     answer = cursor.fetchall()
 
