@@ -1,6 +1,5 @@
 import streamlit as st
 import sqlite3
-import pandas as pd
 from openai import OpenAI
 import json
 
@@ -133,13 +132,22 @@ Return ONLY the SQL query, no explanations or additional text. The query should 
 
 # Function to execute SQL query safely
 def execute_query(query):
-    try:
-        return json.dumps(pd.read_sql_query(query, conn))
-    except Exception as e:
-        print("guess we couldn't execute the query")
-        st.error(f"Error executing query: {str(e)}")
-        return json.dumpes(None)
+    if target_query[-1] != ";":
+        target_query += ";"
 
+    cursor = conn.cursor() 
+
+    cursor.execute(target_query)
+
+    answer = cursor.fetchall()
+
+    answer = answer_dates_to_string(answer)
+
+    answer = json.dumps(answer)
+
+    cursor.close()
+    return answer
+    
 # Streamlit UI
 st.title('📊 SQL Query Generator')
 st.markdown('Use natural language to query your database!')
