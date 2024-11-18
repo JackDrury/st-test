@@ -145,7 +145,9 @@ if generate_button and query_prompt:
 
 # Step 2: check if GPT wanted to call a function
     tool_calls = response_message.tool_calls
+    print("checking for tool calls")
     if tool_calls:
+        print("entered tool calls loop")
 # Step 3: call the function
         # Note: the JSON response may not always be valid; be sure to handle errors
 
