@@ -32,12 +32,12 @@ def get_schema_description():
 
 # Function to generate SQL query using OpenAI
 def generate_sql_query(prompt, schema):
-    system_message = f"""You are a SQL expert. Generate a SQLite query based on the user's request.
+    system_message = f"""You are a SQL expert. Generate a SQLite query based on the user's request. The query you generate MUST be valid SQLite syntax.
 The database has the following schema:
 
 {schema}
 
-Return ONLY the SQL query, no explanations or additional text. The query should be valid SQLite syntax."""
+Return ONLY the SQLite query, no explanations or additional text. The query MUST be valid SQLite syntax."""
 
     messages = [
         {"role": "system", "content": system_message},
