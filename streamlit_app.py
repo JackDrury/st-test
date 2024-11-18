@@ -69,7 +69,7 @@ def execute_query(query):
     return answer
     
 # Streamlit UI
-st.title('📊 Ask some questions about boxing bouts')
+st.title('📊 Ask some questions about boxing')
 st.markdown('The db has a large number of fights, titles and fighters, wins and losses')
 
 # Sidebar with database schema
@@ -80,9 +80,9 @@ with st.sidebar:
     st.header('Sample Questions')
     st.markdown("""
     Try asking questions like:
-    - Show me total revenue by product category
-    - Who are the top 5 customers by revenue?
-    - What's the monthly sales trend?
+    - Who has won the most bouts?
+    - Which five fighters have held the most titles?
+    - How many total wins does the fighter with the longest reign have?
     """)
 
 # Main query interface
