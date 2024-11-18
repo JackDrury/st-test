@@ -13,86 +13,8 @@ model_version = "gpt-4o-mini-2024-07-18"
 def init_connection():
     return sqlite3.connect('sales.db', check_same_thread=False)
 
-conn = init_connection()
-
-# Initialize database with sample data
-def init_db():
-    cursor = conn.cursor()
-    # Create tables
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS sales (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            date DATE,
-            product_id INTEGER,
-            quantity INTEGER,
-            revenue FLOAT,
-            customer_id INTEGER
-        )
-    ''')
-    
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS products (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            category TEXT,
-            price FLOAT
-        )
-    ''')
-    
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS customers (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            email TEXT,
-            country TEXT
-        )
-    ''')
-    
-    # Insert sample data if tables are empty
-    if not cursor.execute("SELECT * FROM products LIMIT 1").fetchone():
-        cursor.executemany(
-            "INSERT INTO products (name, category, price) VALUES (?, ?, ?)",
-            [
-                ("Laptop", "Electronics", 999.99),
-                ("Smartphone", "Electronics", 699.99),
-                ("Headphones", "Electronics", 149.99),
-                ("Coffee Maker", "Appliances", 79.99),
-                ("Blender", "Appliances", 49.99)
-            ]
-        )
-        
-        cursor.executemany(
-            "INSERT INTO customers (name, email, country) VALUES (?, ?, ?)",
-            [
-                ("John Doe", "john@example.com", "USA"),
-                ("Jane Smith", "jane@example.com", "Canada"),
-                ("Alice Johnson", "alice@example.com", "UK"),
-                ("Bob Wilson", "bob@example.com", "Australia"),
-                ("Carol Brown", "carol@example.com", "USA")
-            ]
-        )
-        
-        # Insert sample sales data
-        import random
-        from datetime import datetime, timedelta
-        
-        for i in range(100):
-            date = datetime(2024, 1, 1) + timedelta(days=random.randint(0, 365))
-            product_id = random.randint(1, 5)
-            quantity = random.randint(1, 5)
-            price = cursor.execute("SELECT price FROM products WHERE id=?", (product_id,)).fetchone()[0]
-            revenue = price * quantity
-            customer_id = random.randint(1, 5)
-            
-            cursor.execute("""
-                INSERT INTO sales (date, product_id, quantity, revenue, customer_id)
-                VALUES (?, ?, ?, ?, ?)
-            """, (date.date(), product_id, quantity, revenue, customer_id))
-    
-    conn.commit()
-
-# Initialize the database
-init_db()
+#conn = init_connection()
+conn = connect('boxing.db')
 
 # Function to get table schema
 def get_schema_description():
@@ -100,13 +22,13 @@ def get_schema_description():
     schema = []
     
     # Get tables and their schemas
-    for table in ['sales', 'products', 'customers']:
+    for table in ['bouts', 'champions', 'reigns', 'titles']:
         cursor.execute(f"PRAGMA table_info({table})")
         columns = cursor.fetchall()
         schema.append(f"Table '{table}' with columns: " + 
                      ", ".join([f"{col[1]} ({col[2]})" for col in columns]))
     
-    return "\n".join(schema)
+    return "\n\n".join(schema)
 
 # Function to generate SQL query using OpenAI
 def generate_sql_query(prompt, schema):
