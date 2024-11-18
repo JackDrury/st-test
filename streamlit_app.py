@@ -14,7 +14,7 @@ def init_connection():
     return sqlite3.connect('sales.db', check_same_thread=False)
 
 #conn = init_connection()
-conn = connect('boxing.db')
+conn = sqlite3.connect('boxing.db')
 
 # Function to get table schema
 def get_schema_description():
