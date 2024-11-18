@@ -69,8 +69,8 @@ def execute_query(query):
     return answer
     
 # Streamlit UI
-st.title('📊 SQL Query Generator')
-st.markdown('Use natural language to query your database!')
+st.title('📊 Ask some questions about boxing bouts')
+st.markdown('The db has a large number of fights, titles and fighters, wins and losses')
 
 # Sidebar with database schema
 with st.sidebar:
