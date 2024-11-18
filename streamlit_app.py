@@ -169,7 +169,8 @@ if generate_button and query_prompt:
             function_response = function_to_call(
                 target_query 
             )
-            print(f"this is function response:\n{function_response}")
+            print(f"this is function response (may not appear if it is huge):\n{function_response}")
+            print("hopefully you saw the function response")
             messages.append(
                 {
                     "tool_call_id": tool_call.id,
